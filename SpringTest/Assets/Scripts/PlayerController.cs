@@ -6,7 +6,7 @@ public class PlayerController : MonoBehaviour
     public float FlickMagnitudeThreshold = 0.3f;
     public float FlickReleaseThreshold = 0.1f;
 
-    public float FlickPower = 5f;
+    public float FlickPower = 10f;
     
     int _JumpPower = 0;
     Vector2 _JoystickDirection;
@@ -51,7 +51,7 @@ public class PlayerController : MonoBehaviour
 
     void TryFlickTarget(Vector2 newJoystickDirection)
     {
-        Vector2 direction = (newJoystickDirection - _JoystickDirection) *
+        Vector2 direction = (newJoystickDirection - _JoystickDirection).normalized *
                             (1f + (_JumpPower - 1) * 0.2f);
         direction *= FlickPower;
         if (_BounceTarget.TryFlick(direction))
