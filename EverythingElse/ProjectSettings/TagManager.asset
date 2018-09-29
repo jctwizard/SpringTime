@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Used
   - Unused
+  - Player1
+  - Player2
+  - Face
   layers:
   - Default
   - TransparentFX
