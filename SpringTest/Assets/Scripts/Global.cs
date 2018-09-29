@@ -9,6 +9,6 @@ public class Global : MonoSingleton<Global>
 
     void Awake()
     {
-        PlayerController = gameObject.AddComponent<PlayerController>();
+        PlayerController = gameObject.GetComponent<PlayerController>();
     }
 }

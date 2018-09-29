@@ -7,7 +7,9 @@ public class PlayerController : MonoBehaviour
     public float FlickReleaseThreshold = 0.1f;
 
     public float FlickPower = 10f;
-    
+
+    public LineRenderer trajectory;
+
     int _JumpPower = 0;
     Vector2 _JoystickDirection;
     public BounceController _BounceTarget;
@@ -18,8 +20,17 @@ public class PlayerController : MonoBehaviour
         {
             return;
         }
+
+        Debug.LogFormat("h: {0}, v: {1}", Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
         
         Vector2 newJoystickDirection = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+
+        Vector2 direction = (newJoystickDirection - _JoystickDirection).normalized *
+                          (1f + (_JumpPower - 1) * 0.2f);
+        direction *= FlickPower;
+
+        trajectory.SetPosition(0, _BounceTarget.transform.position);
+        trajectory.SetPosition(1, _BounceTarget.transform.position - (Vector3)newJoystickDirection * 6);
 
         if (DidFlick(newJoystickDirection))
         {
