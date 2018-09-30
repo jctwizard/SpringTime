@@ -8,6 +8,7 @@ public class EntityController : MonoBehaviour
     public Transform ViewPivot;
     public Transform View;
     public AudioSource Booing;
+	public ParticleSystem JumpParticle;
 
     Rigidbody2D _Rigidbody;
     Vector3 _OutDirection;
@@ -132,7 +133,9 @@ public class EntityController : MonoBehaviour
 
         Booing.pitch = 1f + (JumpPower - 1f) * 0.2f;
         Booing.Play();
-    }
+
+		JumpParticle.Play();
+	}
 
     void BounceIn(Collision2D env)
     {
