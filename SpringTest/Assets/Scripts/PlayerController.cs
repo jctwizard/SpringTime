@@ -15,7 +15,7 @@ public class PlayerController : MonoBehaviour
     int _JumpPower = 0;
     Vector2 _JoystickDirection;
     public BounceController _BounceTarget;
-    
+
     void Update()
     {
         if (!_BounceTarget)
@@ -23,7 +23,19 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        Vector2 newJoystickDirection = new Vector2(Input.GetAxis("Horizontal" + AxisSuffix), Input.GetAxis("Vertical" + AxisSuffix));
+        Vector2 newJoystickDirection = Vector2.zero;
+        if (Input.GetJoystickNames().Length > 0)
+        {
+            if (Input.GetJoystickNames()[0].ToLower().Contains("hori") ||
+                Input.GetJoystickNames()[0].ToLower().Contains("wireless"))
+            {
+                newJoystickDirection = new Vector2(Input.GetAxis("HorizontalDS4" + AxisSuffix), Input.GetAxis("VerticalDS4" + AxisSuffix));
+            }
+            else
+            {
+                newJoystickDirection = new Vector2(Input.GetAxis("Horizontal" + AxisSuffix), Input.GetAxis("Vertical" + AxisSuffix));
+            }
+        }
 
         Trajectory.enabled = _BounceTarget.State == BounceController.BounceState.BOUNCE_PLAYER_HELD;
         Trajectory.SetPosition(0, _BounceTarget.transform.position - _BounceTarget.transform.up * 0.5f);
