@@ -29,7 +29,8 @@ public class PlayerController : MonoBehaviour
                           (1f + (_JumpPower - 1) * 0.2f);
         direction *= FlickPower;
 
-        trajectory.SetPosition(0, _BounceTarget.transform.position);
+        trajectory.enabled = _BounceTarget.State == BounceController.BounceState.BOUNCE_PLAYER_HELD;
+        trajectory.SetPosition(0, _BounceTarget.transform.position - _BounceTarget.transform.up * 0.5f);
         trajectory.SetPosition(1, _BounceTarget.transform.position - (Vector3)newJoystickDirection * 6);
 
         if (DidFlick(newJoystickDirection))
