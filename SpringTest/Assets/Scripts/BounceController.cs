@@ -28,6 +28,7 @@ public class BounceController : MonoBehaviour
             
             Vector3 scale = ViewPivot.localScale;
             scale.y = _CompressionFactor;
+			scale.x = 2 - CompressionFactor;
             ViewPivot.localScale = scale;
         }
     }
