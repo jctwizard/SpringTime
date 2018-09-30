@@ -9,8 +9,9 @@ public class BounceController : MonoBehaviour
     public Transform View;
     public AudioSource Booing;
 	public ParticleSystem JumpParticle;
+	public ParticleSystem BounceParticle;
 
-    Rigidbody2D _Rigidbody;
+	Rigidbody2D _Rigidbody;
     Vector2 _OutDirection;
 
     float _CompressionFactor = 1f;
@@ -28,7 +29,7 @@ public class BounceController : MonoBehaviour
             
             Vector3 scale = ViewPivot.localScale;
             scale.y = _CompressionFactor;
-			scale.x = 2 - CompressionFactor;
+			scale.x = 2 - Mathf.Clamp(CompressionFactor, 0, 2);
             ViewPivot.localScale = scale;
         }
     }
@@ -105,12 +106,20 @@ public class BounceController : MonoBehaviour
         transform.localScale = Vector3.one;
         _Rigidbody.isKinematic = false;
         _Rigidbody.AddForce(direction, ForceMode2D.Impulse);
+
+		if (State == BounceState.BOUNCE_PLAYER_HELD)
+		{
+			JumpParticle.Play();
+		}
+		else
+		{
+			BounceParticle.Play();
+		}
+
         State = BounceState.BOUNCE_OUT;
         
         Booing.pitch = 1f + direction.magnitude * 0.2f;
         Booing.Play();
-
-		JumpParticle.Play();
 	}
 
     public bool TryHold(Vector2 direction)

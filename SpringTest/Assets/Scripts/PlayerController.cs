@@ -8,7 +8,9 @@ public class PlayerController : MonoBehaviour
 
     public float FlickPower = 10f;
 
-    public LineRenderer trajectory;
+    public LineRenderer Trajectory;
+
+	public string AxisSuffix = "";
 
     int _JumpPower = 0;
     Vector2 _JoystickDirection;
@@ -21,11 +23,11 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        Vector2 newJoystickDirection = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        Vector2 newJoystickDirection = new Vector2(Input.GetAxis("Horizontal" + AxisSuffix), Input.GetAxis("Vertical" + AxisSuffix));
 
-        trajectory.enabled = _BounceTarget.State == BounceController.BounceState.BOUNCE_PLAYER_HELD;
-        trajectory.SetPosition(0, _BounceTarget.transform.position - _BounceTarget.transform.up * 0.5f);
-        trajectory.SetPosition(1, _BounceTarget.transform.position - (Vector3)newJoystickDirection * 6);
+        Trajectory.enabled = _BounceTarget.State == BounceController.BounceState.BOUNCE_PLAYER_HELD;
+        Trajectory.SetPosition(0, _BounceTarget.transform.position - _BounceTarget.transform.up * 0.5f);
+        Trajectory.SetPosition(1, _BounceTarget.transform.position - (Vector3)newJoystickDirection * 6);
 
         if (DidFlick(newJoystickDirection))
         {
