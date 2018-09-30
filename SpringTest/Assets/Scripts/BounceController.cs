@@ -54,27 +54,12 @@ public class BounceController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        if (State != BounceState.IN_AIR || other.contacts.Length == 0)
-        {
-            return;
-        }
-        
-        _OutDirection = other.contacts[0].normal;
-        Quaternion prevViewPivotRotation = View.rotation;
-        transform.rotation = Quaternion.FromToRotation(Vector3.up, _OutDirection);
-        View.rotation = prevViewPivotRotation;
-        
-        transform.SetParent(other.transform, true);
-        
-        switch (other.gameObject.tag)
-        {
-            case "Env":
-                if (State == BounceState.IN_AIR)
-                {
-                    BounceIn(other);
-                }
-                break;
-        }
+        TryBounceIn(other);
+    }
+    
+    private void OnCollisionStay2D(Collision2D other)
+    {
+        TryBounceIn(other);
     }
 
     void Update()
@@ -140,6 +125,13 @@ public class BounceController : MonoBehaviour
         }
         
         WipeVelocities();
+
+        float dot = Vector2.Dot(_OutDirection, direction);
+        if (dot > -0.1f)
+        {
+            FlyOff(_OutDirection);
+            return false;
+        }
         
         CompressionFactor = Mathf.Lerp(CompressionFactor, 1f - direction.magnitude * 0.8f, 0.1f);
         return true;
@@ -149,6 +141,31 @@ public class BounceController : MonoBehaviour
     {
         State = BounceState.BOUNCE_IN;
         _Rigidbody.isKinematic = true;
+    }
+    
+    void TryBounceIn(Collision2D other)
+    {
+        if (State != BounceState.IN_AIR || other.contacts.Length == 0)
+        {
+            return;
+        }
+        
+        _OutDirection = other.contacts[0].normal;
+        Quaternion prevViewPivotRotation = View.rotation;
+        transform.rotation = Quaternion.FromToRotation(Vector3.up, _OutDirection);
+        View.rotation = prevViewPivotRotation;
+        
+        transform.SetParent(other.transform, true);
+        
+        switch (other.gameObject.tag)
+        {
+            case "Env":
+                if (State == BounceState.IN_AIR)
+                {
+                    BounceIn(other);
+                }
+                break;
+        }
     }
 
     void WipeVelocities()
