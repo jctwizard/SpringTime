@@ -55,39 +55,19 @@ public class Spring : MonoBehaviour {
 	}
 
 	private void OnCollisionEnter2D(Collision2D collision)
-	{
-		if (collision.gameObject.tag == "Unused" && collision.gameObject.GetComponent<Rigidbody2D>() && collision.gameObject.GetComponent<Rigidbody2D>().isKinematic == false)
-		{
-			Spring newSpring = collision.gameObject.AddComponent<Spring>();
-			newSpring.contractSpeed = contractSpeed;
-			newSpring.contractScale = contractScale;
-			newSpring.springSpeed = springSpeed;
-			newSpring.springForce = springForce;
-			newSpring.springSound = springSound;
-			newSpring.playerNumber = playerNumber;
+    {
+        if (collision.gameObject.tag == "Unused" && collision.gameObject.GetComponent<Rigidbody2D>() && collision.gameObject.GetComponent<Rigidbody2D>().isKinematic == false)
+        {
+            switchActiveObject(collision.gameObject);
+        }
+        else if (collidingObjects.Contains(collision.gameObject) == false)
+        {
+            collidingObjects.Add(collision.gameObject);
+            colliding = true;
+        }
+    }
 
-			collision.gameObject.tag = "Player";
-
-			tag = "Used";
-
-			if (newSpring.GetComponent<AudioSource>() == null)
-			{
-				AudioSource newAudio = newSpring.gameObject.AddComponent<AudioSource>();
-				newAudio.playOnAwake = false;
-			}
-
-			transform.localScale = initialScale;
-
-			Destroy(this);
-		}
-		else if (collidingObjects.Contains(collision.gameObject) == false)
-		{
-			collidingObjects.Add(collision.gameObject);
-			colliding = true;
-		}
-	}
-
-	private void OnCollisionExit2D(Collision2D collision)
+    private void OnCollisionExit2D(Collision2D collision)
 	{
 		if (collidingObjects.Contains(collision.gameObject) == true)
 		{
@@ -99,4 +79,39 @@ public class Spring : MonoBehaviour {
 			}
 		}
 	}
+
+    private void switchActiveObject(GameObject newActiveObject)
+    {
+        Spring newSpring = newActiveObject.AddComponent<Spring>();
+        newSpring.contractSpeed = contractSpeed;
+        newSpring.contractScale = contractScale;
+        newSpring.springSpeed = springSpeed;
+        newSpring.springForce = springForce;
+        newSpring.springSound = springSound;
+        newSpring.playerNumber = playerNumber;
+
+        newActiveObject.tag = gameObject.tag;
+
+        tag = "Used";
+
+        if (newActiveObject.transform.Find("Face"))
+        {
+            newActiveObject.transform.Find("Face").gameObject.SetActive(true);
+        }
+
+        if (transform.Find("Face"))
+        {
+            transform.Find("Face").gameObject.SetActive(false);
+        }
+
+        if (newSpring.GetComponent<AudioSource>() == null)
+        {
+            AudioSource newAudio = newSpring.gameObject.AddComponent<AudioSource>();
+            newAudio.playOnAwake = false;
+        }
+
+        transform.localScale = initialScale;
+
+        Destroy(this);
+    }
 }
