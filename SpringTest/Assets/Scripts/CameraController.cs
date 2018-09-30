@@ -9,7 +9,8 @@ public class CameraController : MonoBehaviour
 	void Update()
 	{
 		Vector3 pos = transform.position;
-		pos.x = Mathf.Lerp(pos.x, Follow.position.x, 0.1f);
+		pos = Vector3.Lerp(pos, Follow.position, 0.1f);
+		pos.z = transform.position.z;
 		transform.position = pos;
 	}
 }

@@ -24,17 +24,25 @@ public class PlayerController : MonoBehaviour
         }
 
         Vector2 newJoystickDirection = Vector2.zero;
-        if (Input.GetJoystickNames().Length > 0)
+
+		bool dualshock = false;
+
+		foreach (string name in Input.GetJoystickNames())
+		{
+			if (name.ToLower().Contains("hori") ||
+				name.ToLower().Contains("wireless"))
+			{
+				dualshock = true;
+			}
+		}
+		
+        if (dualshock)
         {
-            if (Input.GetJoystickNames()[0].ToLower().Contains("hori") ||
-                Input.GetJoystickNames()[0].ToLower().Contains("wireless"))
-            {
-                newJoystickDirection = new Vector2(Input.GetAxis("HorizontalDS4" + AxisSuffix), Input.GetAxis("VerticalDS4" + AxisSuffix));
-            }
-            else
-            {
-                newJoystickDirection = new Vector2(Input.GetAxis("Horizontal" + AxisSuffix), Input.GetAxis("Vertical" + AxisSuffix));
-            }
+            newJoystickDirection = new Vector2(Input.GetAxis("Horizontal" + AxisSuffix + "DS4"), Input.GetAxis("Vertical" + AxisSuffix + "DS4"));
+        }
+        else
+        {
+            newJoystickDirection = new Vector2(Input.GetAxis("Horizontal" + AxisSuffix), Input.GetAxis("Vertical" + AxisSuffix));
         }
 
         Trajectory.enabled = _BounceTarget.State == BounceController.BounceState.BOUNCE_PLAYER_HELD;
