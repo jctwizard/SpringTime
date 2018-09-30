@@ -11,8 +11,9 @@ public class BounceController : MonoBehaviour
 	public ParticleSystem JumpParticle;
 	public ParticleSystem BounceParticle;
 
-	Rigidbody2D _Rigidbody;
+    GameObject _Anchor;
     Vector2 _OutDirection;
+	Rigidbody2D _Rigidbody;
     Quaternion _ParentsInitialRotation;
 
     float _CompressionFactor = 1f;
@@ -53,6 +54,7 @@ public class BounceController : MonoBehaviour
     void Awake()
     {
         _Rigidbody = GetComponent<Rigidbody2D>();
+        _Anchor = new GameObject("Anchor");
     }
 
     private void OnCollisionEnter2D(Collision2D other)
@@ -73,6 +75,9 @@ public class BounceController : MonoBehaviour
                 break;
             case BounceState.BOUNCE_IN:
                 FlyOff(_OutDirection * 2f);
+                break;
+            case BounceState.BOUNCE_PLAYER_HELD:
+                SetToAnchor();
                 break;
             case BounceState.BOUNCE_OUT:
                 CompressionFactor = CompressionFactor * 2;
@@ -103,7 +108,7 @@ public class BounceController : MonoBehaviour
 
     void FlyOff(Vector2 direction)
     {
-        transform.SetParent(null, true);
+        //transform.SetParent(null, true);
         transform.localScale = Vector3.one;
         _Rigidbody.isKinematic = false;
         _Rigidbody.AddForce(direction, ForceMode2D.Impulse);
@@ -137,7 +142,7 @@ public class BounceController : MonoBehaviour
         
         WipeVelocities();
 
-        float dot = Vector2.Dot((transform.parent.rotation * Quaternion.Inverse(_ParentsInitialRotation)) * _OutDirection , direction);
+        float dot = Vector2.Dot((_Anchor.transform.parent.rotation * Quaternion.Inverse(_ParentsInitialRotation)) * _OutDirection , direction);
         if (dot > -0.1f)
         {
             FlyOff(_OutDirection * 5f);
@@ -153,6 +158,12 @@ public class BounceController : MonoBehaviour
         State = BounceState.BOUNCE_IN;
         _Rigidbody.isKinematic = true;
     }
+
+    void SetToAnchor()
+    {
+        transform.position = _Anchor.transform.position;
+        transform.rotation = _Anchor.transform.rotation;
+    }
     
     void TryBounceIn(Collision2D other)
     {
@@ -166,8 +177,12 @@ public class BounceController : MonoBehaviour
         transform.rotation = Quaternion.FromToRotation(Vector3.up, _OutDirection);
         View.rotation = prevViewPivotRotation;
         
-        transform.SetParent(other.transform, true);
-        _ParentsInitialRotation = transform.parent.rotation;
+        //transform.SetParent(other.transform, true);
+        _Anchor.transform.SetParent(other.transform, true);
+        _Anchor.transform.position = transform.position;
+        _Anchor.transform.rotation = transform.rotation;
+        
+        _ParentsInitialRotation = _Anchor.transform.parent.rotation;
         
         switch (other.gameObject.tag)
         {
