@@ -187,15 +187,7 @@ public class BounceController : MonoBehaviour
         
         _ParentsInitialRotation = _Anchor.transform.parent.rotation;
         
-        switch (other.gameObject.tag)
-        {
-            case "Env":
-                if (State == BounceState.IN_AIR)
-                {
-                    BounceIn(other);
-                }
-                break;
-        }
+        BounceIn(other);
     }
 
     void WipeVelocities()
