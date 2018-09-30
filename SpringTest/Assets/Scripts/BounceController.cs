@@ -11,6 +11,9 @@ public class BounceController : MonoBehaviour
 	public ParticleSystem JumpParticle;
 	public ParticleSystem BounceParticle;
 
+    public float RegularBounceForce = 2f;
+    public float PlayerBounceForce = 5f;
+
     GameObject _Anchor;
     Vector2 _OutDirection;
 	Rigidbody2D _Rigidbody;
@@ -74,7 +77,7 @@ public class BounceController : MonoBehaviour
             case BounceState.IN_AIR:
                 break;
             case BounceState.BOUNCE_IN:
-                FlyOff(_OutDirection * 2f);
+                FlyOff(_OutDirection * RegularBounceForce);
                 break;
             case BounceState.BOUNCE_PLAYER_HELD:
                 SetToAnchor();
@@ -101,7 +104,7 @@ public class BounceController : MonoBehaviour
         float angle = -Vector2.SignedAngle(_OutDirection.normalized, direction.normalized);
         _Rigidbody.angularVelocity = angle * 10f;
         
-        FlyOff(_OutDirection * 2f + direction);
+        FlyOff(_OutDirection * RegularBounceForce + direction);
 
         return true;
     }
@@ -145,7 +148,7 @@ public class BounceController : MonoBehaviour
         float dot = Vector2.Dot((_Anchor.transform.parent.rotation * Quaternion.Inverse(_ParentsInitialRotation)) * _OutDirection , direction);
         if (dot > -0.1f)
         {
-            FlyOff(_OutDirection * 5f);
+            FlyOff(_OutDirection * PlayerBounceForce);
             return false;
         }
         

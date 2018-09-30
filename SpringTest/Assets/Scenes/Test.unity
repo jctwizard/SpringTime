@@ -7464,13 +7464,13 @@ Camera:
     serializedVersion: 2
     x: 0
     y: 0
-    width: 0.5
+    width: 1
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 10
+  orthographic size: 5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -9606,6 +9606,11 @@ Prefab:
       propertyPath: Trajectory
       value: 
       objectReference: {fileID: 596855267}
+    - target: {fileID: 114633769492626956, guid: 735248b78c1414ee2819506b081b1d4a,
+        type: 2}
+      propertyPath: FlickPower
+      value: 10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 735248b78c1414ee2819506b081b1d4a, type: 2}
   m_IsPrefabParent: 0
@@ -9618,11 +9623,11 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4335030801505050, guid: 71b624bfdc92a4fec8abe303037d5f7a, type: 2}
       propertyPath: m_LocalPosition.x
-      value: -2.75
+      value: -13.34
       objectReference: {fileID: 0}
     - target: {fileID: 4335030801505050, guid: 71b624bfdc92a4fec8abe303037d5f7a, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 2.43
       objectReference: {fileID: 0}
     - target: {fileID: 4335030801505050, guid: 71b624bfdc92a4fec8abe303037d5f7a, type: 2}
       propertyPath: m_LocalPosition.z
@@ -9727,6 +9732,21 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1297157686536736, guid: 71b624bfdc92a4fec8abe303037d5f7a, type: 2}
       propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 50465620842215558, guid: 71b624bfdc92a4fec8abe303037d5f7a,
+        type: 2}
+      propertyPath: m_GravityScale
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114027937986071008, guid: 71b624bfdc92a4fec8abe303037d5f7a,
+        type: 2}
+      propertyPath: RegularBounceForce
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 114027937986071008, guid: 71b624bfdc92a4fec8abe303037d5f7a,
+        type: 2}
+      propertyPath: PlayerBounceForce
       value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
