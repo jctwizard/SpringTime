@@ -21,13 +21,7 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        Debug.LogFormat("h: {0}, v: {1}", Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-        
         Vector2 newJoystickDirection = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-
-        Vector2 direction = (newJoystickDirection - _JoystickDirection).normalized *
-                          (1f + (_JumpPower - 1) * 0.2f);
-        direction *= FlickPower;
 
         trajectory.enabled = _BounceTarget.State == BounceController.BounceState.BOUNCE_PLAYER_HELD;
         trajectory.SetPosition(0, _BounceTarget.transform.position - _BounceTarget.transform.up * 0.5f);
