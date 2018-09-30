@@ -25,7 +25,6 @@ public class BounceController : MonoBehaviour
             
             _CompressionFactor = value;
             
-            Time.timeScale = _CompressionFactor;
             Vector3 scale = ViewPivot.localScale;
             scale.y = _CompressionFactor;
             ViewPivot.localScale = scale;
@@ -54,7 +53,7 @@ public class BounceController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.contacts.Length == 0)
+        if (State != BounceState.IN_AIR || other.contacts.Length == 0)
         {
             return;
         }
@@ -63,6 +62,8 @@ public class BounceController : MonoBehaviour
         Quaternion prevViewPivotRotation = View.rotation;
         transform.rotation = Quaternion.FromToRotation(Vector3.up, _OutDirection);
         View.rotation = prevViewPivotRotation;
+        
+        transform.SetParent(other.transform, true);
         
         switch (other.gameObject.tag)
         {
@@ -82,9 +83,7 @@ public class BounceController : MonoBehaviour
             case BounceState.IN_AIR:
                 break;
             case BounceState.BOUNCE_IN:
-                _Rigidbody.isKinematic = false;
-                _Rigidbody.AddForce(_OutDirection * 5f, ForceMode2D.Impulse);
-                State = BounceState.BOUNCE_OUT;
+                FlyOff(_OutDirection * 5f);
                 break;
             case BounceState.BOUNCE_OUT:
                 CompressionFactor = CompressionFactor * 2;
@@ -105,18 +104,24 @@ public class BounceController : MonoBehaviour
             return false;
         }
         
-        _Rigidbody.isKinematic = false;
         float angle = -Vector2.SignedAngle(_OutDirection.normalized, direction.normalized);
-        
-        _Rigidbody.AddForce(_OutDirection * 5f + direction, ForceMode2D.Impulse);
         _Rigidbody.angularVelocity = angle * 10f;
         
-        State = BounceState.BOUNCE_OUT;
-
-        Booing.pitch = 1f + direction.magnitude * 0.2f;
-        Booing.Play();
+        FlyOff(_OutDirection * 5f + direction);
 
         return true;
+    }
+
+    void FlyOff(Vector2 direction)
+    {
+        transform.SetParent(null, true);
+        transform.localScale = Vector3.one;
+        _Rigidbody.isKinematic = false;
+        _Rigidbody.AddForce(direction, ForceMode2D.Impulse);
+        State = BounceState.BOUNCE_OUT;
+        
+        Booing.pitch = 1f + direction.magnitude * 0.2f;
+        Booing.Play();
     }
 
     public bool TryHold(Vector2 direction)
@@ -131,6 +136,8 @@ public class BounceController : MonoBehaviour
             return false;
         }
         
+        WipeVelocities();
+        
         CompressionFactor = Mathf.Lerp(CompressionFactor, 1f - direction.magnitude * 0.8f, 0.1f);
         return true;
     }
@@ -138,7 +145,6 @@ public class BounceController : MonoBehaviour
     void BounceIn(Collision2D env)
     {
         State = BounceState.BOUNCE_IN;
-        WipeVelocities();
         _Rigidbody.isKinematic = true;
     }
 
