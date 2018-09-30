@@ -71,14 +71,17 @@ public class PlayerController : MonoBehaviour
 
     void TryFlickTarget(Vector2 newJoystickDirection)
     {
-        Vector2 direction = (newJoystickDirection - _JoystickDirection).normalized *
-                            (1f + (_JumpPower - 1 * 0.1f));
+        Vector2 direction = (newJoystickDirection - _JoystickDirection).normalized;
         direction *= FlickPower;
+        _BounceTarget.TryFlick(direction);
+
+        /*
         if (_BounceTarget.TryFlick(direction))
         {
             _JumpPower++;
             _JumpPower = _JumpPower % 4;
         }
+        */
     }
 
     void TryHoldTarget(Vector2 newJoystickDirection)
