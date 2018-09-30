@@ -13,6 +13,7 @@ public class BounceController : MonoBehaviour
 
 	Rigidbody2D _Rigidbody;
     Vector2 _OutDirection;
+    Quaternion _ParentsInitialRotation;
 
     float _CompressionFactor = 1f;
     public float CompressionFactor
@@ -71,7 +72,7 @@ public class BounceController : MonoBehaviour
             case BounceState.IN_AIR:
                 break;
             case BounceState.BOUNCE_IN:
-                FlyOff(_OutDirection * 5f);
+                FlyOff(_OutDirection * 2f);
                 break;
             case BounceState.BOUNCE_OUT:
                 CompressionFactor = CompressionFactor * 2;
@@ -95,7 +96,7 @@ public class BounceController : MonoBehaviour
         float angle = -Vector2.SignedAngle(_OutDirection.normalized, direction.normalized);
         _Rigidbody.angularVelocity = angle * 10f;
         
-        FlyOff(_OutDirection * 5f + direction);
+        FlyOff(_OutDirection * 2f + direction);
 
         return true;
     }
@@ -136,10 +137,10 @@ public class BounceController : MonoBehaviour
         
         WipeVelocities();
 
-        float dot = Vector2.Dot(_OutDirection, direction);
+        float dot = Vector2.Dot((transform.parent.rotation * Quaternion.Inverse(_ParentsInitialRotation)) * _OutDirection , direction);
         if (dot > -0.1f)
         {
-            FlyOff(_OutDirection);
+            FlyOff(_OutDirection * 5f);
             return false;
         }
         
@@ -166,6 +167,7 @@ public class BounceController : MonoBehaviour
         View.rotation = prevViewPivotRotation;
         
         transform.SetParent(other.transform, true);
+        _ParentsInitialRotation = transform.parent.rotation;
         
         switch (other.gameObject.tag)
         {
